@@ -15,8 +15,6 @@ Masalah: Bagaimana memprediksi harga rumah di daerah Boston berdasarkan faktor l
 
 Membuat model prediktif untuk memperkirakan harga rumah (MEDV) berdasarkan fitur-fitur seperti tingkat kriminalitas (CRIM), akses jalan (RAD), kualitas pendidikan (PTRATIO), dan lainnya.
 
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
-
 ### Solution statements
 Solusi yang diusulkan:
 - Baseline Model: Menggunakan Linear Regression sebagai baseline.
@@ -26,7 +24,10 @@ Solusi yang diusulkan:
 
 ## Data Understanding
 Dataset yang digunakan berasal dari Kaggle: [Real Estate Price](https://www.kaggle.com/code/fahadrehman07/real-estate-price-prediction?select=data.csv)
-- Kolom/Fitur:
+1. Jumlah Baris dan Kolom
+- 511 baris data (observasi)
+- 14 kolom (fitur)
+2. Kolom/Fitur:
   - `CRIM`:	Tingkat kriminalitas per kapita
   - `ZN`	Proporsi lahan zonasi untuk rumah besar
   - `INDUS`	Proporsi area bisnis non-ritel
@@ -42,15 +43,23 @@ Dataset yang digunakan berasal dari Kaggle: [Real Estate Price](https://www.kagg
   - `LSTAT`:	Persentase penduduk berstatus ekonomi rendah
   - `MEDV`:	Harga rumah median (target)
 
+2. Kondisi Awal Data
+- Missing Values
+  - Terdapat 5 Missing Value pada kolom `RM`
+- Distribusi dan Outlier
+  
+  Berdasarkan hasil .describe():
+
+  - Kolom CRIM memiliki nilai maksimum 88.98, jauh di atas nilai kuartil ketiga (Q3 = 3.62), menunjukkan potensi outlier pada tingkat kejahatan.
+  - Kolom LSTAT juga memiliki nilai maksimum tinggi (76.00), dengan Q3 = 17.11, menunjukkan keberadaan outlier yang signifikan.
+  - Kolom RM berkisar dari 3.56 hingga 8.78, nilai ekstrem yang mungkin menunjukkan properti tidak biasa.
+- Data ini tidak memiliki duplikat.
+
 ## Data Preparation
 ### 📌 Tahapan Data Preparation
-Handling Missing Values: Cek dan tangani jika ada.
-
-Encoding: Variabel CHAS sudah dalam bentuk 0/1 (tidak perlu encoding tambahan).
-
-Scaling: Menggunakan StandardScaler karena model seperti Linear Regression dan Gradient Boosting sensitif terhadap skala.
-
-Split Data: 80% data untuk training dan 20% untuk testing.
+- Handling Missing Values: Menangani 5 missing values pada kolom `RM`.
+- Split Data: 80% data untuk training dan 20% untuk testing.
+- Scaling: Menggunakan StandardScaler karena model seperti Linear Regression dan Gradient Boosting sensitif terhadap skala.
 
 ### 📌 Alasan Tahapan
 Scaling diperlukan untuk menyamakan skala fitur numerik agar model tidak bias.
@@ -61,6 +70,36 @@ Split data untuk menghindari data leakage dan memastikan evaluasi model adil.
 
 
 ## Modeling
+Algoritma yang Digunakan:
+
+1. Linear Regression
+- Linear Regression adalah metode regresi yang berusaha mencari garis lurus terbaik untuk memetakan hubungan antara variabel input (fitur) dan output (target). Model ini bekerja dengan meminimalkan total selisih kuadrat antara prediksi dan nilai sebenarnya.
+- Parameter yang digunakan: default (tidak ada yang disetel secara eksplisit)
+
+2. Random Forest Regressor
+- Random Forest merupakan algoritma ensemble berbasis decision tree. Ia membangun banyak decision tree (hutan) dan menggabungkan hasil prediksi dari semua tree (rata-rata untuk regresi) untuk meningkatkan akurasi dan mengurangi overfitting.
+
+- Parameter yang digunakan:
+  - random_state=42 untuk memastikan hasil yang konsisten
+  - Parameter lainnya menggunakan default
+
+3. Gradient Boosting Regressor
+- Gradient Boosting adalah algoritma ensemble yang membangun model secara bertahap. Setiap tree baru berusaha memperbaiki kesalahan dari tree sebelumnya, dengan pendekatan gradient descent pada fungsi loss.
+
+- Parameter model awal:
+  - random_state=42
+  - Lainnya default
+
+- Parameter setelah tuning dengan GridSearchCV:
+
+      {
+        'learning_rate': 0.05,
+        'max_depth': 5,
+        'min_samples_leaf': 3,
+        'min_samples_split': 2,
+        'n_estimators': 200
+      }
+
 ### 📌 Metrik Evaluasi
 - MAE	(Rata-rata nilai absolut error): Semakin kecil, semakin baik
 - RMSE	(Akar dari rata-rata kuadrat error): Lebih penal terhadap error besar
