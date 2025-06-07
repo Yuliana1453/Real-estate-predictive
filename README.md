@@ -57,17 +57,16 @@ Dataset yang digunakan berasal dari Kaggle: [Real Estate Price](https://www.kagg
 
 ## Data Preparation
 ### 📌 Tahapan Data Preparation
+- Rename nama kolom.
 - Handling Missing Values: Menangani 5 missing values pada kolom `RM`.
 - Split Data: 80% data untuk training dan 20% untuk testing.
 - Scaling: Menggunakan StandardScaler karena model seperti Linear Regression dan Gradient Boosting sensitif terhadap skala.
 
 ### 📌 Alasan Tahapan
-Scaling diperlukan untuk menyamakan skala fitur numerik agar model tidak bias.
-
-Handling missing values penting agar tidak terjadi error saat training.
-
-Split data untuk menghindari data leakage dan memastikan evaluasi model adil.
-
+- Rename nama kolom agar lebih mudah dipahami.
+- Scaling diperlukan untuk menyamakan skala fitur numerik agar model tidak bias.
+- Handling missing values penting agar tidak terjadi error saat training.
+- Split data untuk menghindari data leakage dan memastikan evaluasi model adil.
 
 ## Modeling
 Algoritma yang Digunakan:
